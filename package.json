@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Event emitting and monitoring.",
   "type": "module",
-  "main": "dist\\index.js",
+  "main": "dist\\emitter.js",
   "scripts": {
     "build": "babel src -d dist"
   },
