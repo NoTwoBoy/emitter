@@ -5,9 +5,14 @@
   "type": "module",
   "main": "dist\\index.js",
   "scripts": {
-    "build:cjs": "babel src -d dist"
+    "build": "babel src -d dist"
   },
   "repository": "git@github.com:Pineapple0919/emitter.git",
   "author": "Pineapple",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4"
+  }
 }
