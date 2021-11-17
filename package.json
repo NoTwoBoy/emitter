@@ -1,0 +1,13 @@
+{
+  "name": "emitter",
+  "version": "1.0.0",
+  "description": "Event emitting and monitoring.",
+  "type": "module",
+  "main": "dist\\index.js",
+  "scripts": {
+    "build:cjs": "babel src -d dist"
+  },
+  "repository": "git@github.com:Pineapple0919/emitter.git",
+  "author": "Pineapple",
+  "license": "MIT"
+}
