@@ -1,13 +1,7 @@
-/*
- * @Description: 订阅发布器
- * @Date: 2021-11-16 15:31:17
- * @LastEditTime: 2021-11-17 16:28:08
- * @FilePath: \emitter\emitter.js
- */
-
-class Emitter {
+export class Emitter {
   constructor() {
     this.events = new Map()
+    this.eventsCaches = new Map()
   }
 
   once(name, callback, context) {
@@ -29,6 +23,13 @@ class Emitter {
       this.events.set(name, [])
     }
 
+    if (this.eventsCaches.has(name)) {
+      const eventsCachesArray = this.eventsCaches.get(name).slice()
+      eventsCachesArray.forEach(event => {
+        callback.apply(context, event.args)
+      })
+    }
+
     this.events.get(name).push({
       callback,
       context
@@ -46,6 +47,13 @@ class Emitter {
         event.callback.apply(event.context, args)
       })
     }
+    if (!this.eventsCaches.has(name)) {
+      this.eventsCaches.set(name, [])
+    }
+
+    this.eventsCaches.get(name).push({
+      args
+    })
 
     return this
   }
@@ -57,7 +65,7 @@ class Emitter {
       const currentEvents = this.events.get(name)
       if (currentEvents.length && callback) {
         currentEvents.forEach(event => {
-          if (event.callback !== callback && event.callback._ !== callback)
+          if (event.callback !== callback && event.callback?._ !== callback)
             liveEvents.push(callback)
         })
       }
@@ -69,8 +77,35 @@ class Emitter {
 
     return this
   }
+
+  clear(names, option) {
+    names = names ?? []
+    option = option ?? {}
+    const { isClearExcludesCaches } = option
+
+    const excludes = names.map(name => {
+      return {
+        name,
+        event: this.events.get(name),
+        eventCache: this.eventsCaches.get(name)
+      }
+    })
+
+    this.events = new Map()
+    this.eventsCaches = new Map()
+
+    excludes.forEach(item => {
+      item.event && this.events.set(item.name, item.event)
+      !isClearExcludesCaches &&
+        item.eventCache &&
+        this.eventsCaches.set(item.name, item.eventCache)
+    })
+  }
 }
 
-const emitter = new Emitter()
-
-export default emitter
+export const initEmitter = (function() {
+  let emit = null
+  return function() {
+    return emit || (emit = new Emitter())
+  }
+})()
